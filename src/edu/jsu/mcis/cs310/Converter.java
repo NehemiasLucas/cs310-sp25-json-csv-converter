@@ -2,6 +2,9 @@ package edu.jsu.mcis.cs310;
 
 import com.github.cliftonlabs.json_simple.*;
 import com.opencsv.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Converter {
     
@@ -72,12 +75,33 @@ public class Converter {
     */
     
     @SuppressWarnings("unchecked")
-    public static String csvToJson(String csvString) {
+    public static String csvToJson(String csvString) throws IOException {
         
-        String result = "{}"; // default return value; replace later!
-        
-        try {
-        
+        String result = null;
+ 
+      try { 
+            
+            BufferedReader br = new BufferedReader(new FileReader(csvString));
+            String line;
+            String[] headers = null;
+            JsonArray jsonArray = new JsonArray();
+
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                if (headers == null) {
+                    headers = values;
+                } else {
+                    JsonObject jsonObject = new JsonObject();
+                    for (int i = 0; i < headers.length; i++) {
+                        jsonObject.put(headers[i], values[i]);
+                    }
+                    jsonArray.add(jsonObject);
+                    
+                    return result= jsonArray.toJson(); // default return value; replace later!
+
+                }               
+            }
+            
             // INSERT YOUR CODE HERE
             
         }
@@ -86,25 +110,36 @@ public class Converter {
         }
         
         return result.trim();
-        
-    }
+         
+    }  
     
     @SuppressWarnings("unchecked")
     public static String jsonToCsv(String jsonString) {
         
-        String result = ""; // default return value; replace later!
+        String result = null ; // default return value; replace later!
         
         try {
+            StringBuilder csvFile = new StringBuilder(jsonString);
+            BufferedReader reader = new BufferedReader(new FileReader(jsonString));
+            String line;
+            while((line = reader.readLine()) != null) {
+                csvFile.append(line).append('\n');
+                
+            }
+            String csvString = csvFile.toString().trim();
+            
+           
+            
             
             // INSERT YOUR CODE HERE
-            
+               
         }
         catch (Exception e) {
             e.printStackTrace();
         }
         
         return result.trim();
-        
+               
     }
     
 }
